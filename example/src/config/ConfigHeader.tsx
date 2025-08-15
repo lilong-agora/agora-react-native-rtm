@@ -31,7 +31,6 @@ export const ConfigHeader = ({
   const [server, setServer] = useState(Config.server);
   const [port, setPort] = useState<number>(Config.port);
   const [userId, setUserId] = useState<string>(Config.uid);
-  const [token, setToken] = useState<string>(Config.token);
   const [areaCode, setAreaCode] = useState<number>(Config.areaCode);
   const [proxyType, setProxyType] = useState<RtmProxyType>(Config.proxyType);
   const [encryptionMode, setEncryptionMode] = useState<number>(
@@ -135,16 +134,7 @@ export const ConfigHeader = ({
                 value={tokenGenerationHeaders}
               />
               <AgoraDivider />
-              <AgoraTextInput
-                onChangeText={(text) => {
-                  setToken(text);
-                  Config.token = text;
-                }}
-                placeholder="please input token"
-                label="token"
-                value={token}
-              />
-              <AgoraDivider />
+
               <AgoraDropdown
                 items={enumToItems(RtmProxyType)}
                 onValueChange={(v) => {
