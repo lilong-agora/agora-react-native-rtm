@@ -14,6 +14,8 @@ try {
 const config = {
   // Get your own App ID at https://dashboard.agora.io/
   appId: env.appId,
+  // Certificate instead of token
+  certificate: env.certificate || '',
   // Please refer to https://docs.agora.io/en/Agora%20Platform/token
   token: env.token || '',
   channelName: env.channelName || 'rtmtestrn',
@@ -28,6 +30,11 @@ const config = {
   encryptionMode: RtmEncryptionMode.none,
   encryptionKey: '',
   encryptionSalt: new Array(32).fill(1, 0, 32),
+  // Token generation
+  tokenGenerationUrl: '',
+  tokenGenerationHeaders: '{}',
+  readChannels: '',
+  writeChannels: '',
 };
 
 export default config;

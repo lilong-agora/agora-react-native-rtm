@@ -41,6 +41,11 @@ export const ConfigHeader = ({
     Config.encryptionKey
   );
   const [appId, setAppId] = useState<string>(Config.appId);
+  const [certificate, setCertificate] = useState<string>(Config.certificate);
+  const [readChannels, setReadChannels] = useState<string>(Config.readChannels);
+  const [writeChannels, setWriteChannels] = useState<string>(Config.writeChannels);
+  const [tokenGenerationUrl, setTokenGenerationUrl] = useState<string>(Config.tokenGenerationUrl);
+  const [tokenGenerationHeaders, setTokenGenerationHeaders] = useState<string>(Config.tokenGenerationHeaders);
   const toggleOverlay = () => {
     onShow();
     setVisible(!visible);
@@ -78,6 +83,56 @@ export const ConfigHeader = ({
                 placeholder="please input userId"
                 label="userId"
                 value={userId}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  setCertificate(text);
+                  Config.certificate = text;
+                }}
+                placeholder="please input certificate"
+                label="certificate"
+                value={certificate}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  setReadChannels(text);
+                  Config.readChannels = text;
+                }}
+                placeholder="please input read channels (comma separated)"
+                label="read channels"
+                value={readChannels}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  setWriteChannels(text);
+                  Config.writeChannels = text;
+                }}
+                placeholder="please input write channels (comma separated)"
+                label="write channels"
+                value={writeChannels}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  setTokenGenerationUrl(text);
+                  Config.tokenGenerationUrl = text;
+                }}
+                placeholder="please input token generation URL"
+                label="token generation URL"
+                value={tokenGenerationUrl}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  setTokenGenerationHeaders(text);
+                  Config.tokenGenerationHeaders = text;
+                }}
+                placeholder="please input token generation headers (JSON)"
+                label="token generation headers"
+                value={tokenGenerationHeaders}
               />
               <AgoraDivider />
               <AgoraTextInput
