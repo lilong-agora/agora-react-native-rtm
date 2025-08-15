@@ -79,8 +79,8 @@ export default function Login() {
       }
 
       // Parse read/write channels 
-      const readChannels = Config.readChannels ? Config.readChannels.split(',').map(c => c.trim()) : [];
-      const writeChannels = Config.writeChannels ? Config.writeChannels.split(',').map(c => c.trim()) : [];
+      const readChannels = Config.readChannels ? Config.readChannels.split(',').map((c: string) => c.trim()) : [];
+      const writeChannels = Config.writeChannels ? Config.writeChannels.split(',').map((c: string) => c.trim()) : [];
 
       // Prepare request payload
       const payload = {
@@ -105,19 +105,40 @@ export default function Login() {
       };
 
       // Parse headers if provided
-      let headers = {};
+      let headers: Record<string, string> = {};
       try {
-        if (Config.tokenGenerationHeaders) {
-          headers = JSON.parse(Config.tokenGenerationHeaders);
+        if (Config.tokenGenerationHeaders && Config.tokenGenerationHeaders !== '{}') {
+          // 尝试解析headers，首先检查它是否已经是一个对象
+          if (typeof Config.tokenGenerationHeaders === 'object') {
+            headers = Config.tokenGenerationHeaders as Record<string, string>;
+          } else {
+            // 移除前后可能的引号，这可能是从环境变量中引入的
+            let headerStr = Config.tokenGenerationHeaders;
+            if (headerStr.startsWith("'") && headerStr.endsWith("'")) {
+              headerStr = headerStr.substring(1, headerStr.length - 1);
+            }
+            if (headerStr.startsWith('"') && headerStr.endsWith('"')) {
+              headerStr = headerStr.substring(1, headerStr.length - 1);
+            }
+            
+            headers = JSON.parse(headerStr) as Record<string, string>;
+          }
         }
       } catch (error) {
-        log.error('Failed to parse token generation headers', error);
+        log.error('Failed to parse token generation headers: ' + Config.tokenGenerationHeaders, error);
       }
 
       // Add default content-type if not provided
       if (!headers['Content-Type']) {
         headers['Content-Type'] = 'application/json';
       }
+
+      // 记录请求信息以便调试
+      log.info('Token generation request:', {
+        url: Config.tokenGenerationUrl,
+        headers: headers,
+        payload: payload
+      });
 
       // Make HTTP request
       const response = await fetch(Config.tokenGenerationUrl, {
@@ -126,17 +147,30 @@ export default function Login() {
         body: JSON.stringify(payload)
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const responseText = await response.text();
+      let data;
+      
+      try {
+        // 尝试将响应解析为JSON
+        data = JSON.parse(responseText);
+      } catch (error) {
+        // 如果无法解析为JSON，抛出错误并包含原始响应
+        throw new Error(`Failed to parse response as JSON. Status: ${response.status}, Response: ${responseText}`);
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        // 记录完整响应以便调试
+        log.error('HTTP error response:', data);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(data)}`);
+      }
+
       if (data.token) {
         Config.token = data.token;
         log.info('Token generated successfully');
         return data.token;
       } else {
-        throw new Error('Token not found in response');
+        log.error('Response has no token field:', data);
+        throw new Error(`Token not found in response. Response: ${JSON.stringify(data)}`);
       }
     } catch (error) {
       log.error('Token generation failed', error);

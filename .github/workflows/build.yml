@@ -71,7 +71,7 @@ jobs:
           echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
           echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
           echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
-          echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS || '{}' }}'," >> env_local.ts
+          echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS || '\"{}\"' }}," >> env_local.ts
           echo "  readChannels: '${{ secrets.READ_CHANNELS || '' }}'," >> env_local.ts
           echo "  writeChannels: '${{ secrets.WRITE_CHANNELS || '' }}'," >> env_local.ts
           echo "  token: ''" >> env_local.ts
@@ -141,7 +141,7 @@ jobs:
           echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
           echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
           echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
-          echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS || '{}' }}'," >> env_local.ts
+          echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS || '\"{}\"' }}," >> env_local.ts
           echo "  readChannels: '${{ secrets.READ_CHANNELS || '' }}'," >> env_local.ts
           echo "  writeChannels: '${{ secrets.WRITE_CHANNELS || '' }}'," >> env_local.ts
           echo "  token: ''" >> env_local.ts
