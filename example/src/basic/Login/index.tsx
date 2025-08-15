@@ -130,35 +130,30 @@ export default function Login() {
         headers,
         body: JSON.stringify(payload)
       });
-
-      const responseText = await response.text();
+  
       let data;
-      
       try {
-        // 尝试将响应解析为JSON
-        data = JSON.parse(responseText);
-      } catch (error) {
-        // 如果无法解析为JSON，抛出错误并包含原始响应
-        throw new Error(`Failed to parse response as JSON. Status: ${response.status}, Response: ${responseText}`);
+        data = await response.json();
+      } catch {
+        const text = await response.text();
+        throw new Error(`Invalid JSON. Status: ${response.status}, Body: ${text}`);
       }
-
+  
       if (!response.ok) {
-        // 记录完整响应以便调试
-        log.error('HTTP error response:', data);
-        throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(data)}`);
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
       }
-
-      if (data.token) {
-        Config.token = data.token;
-        log.info('Token generated successfully');
-        return data.token;
-      } else {
-        log.error('Response has no token field:', data);
-        throw new Error(`Token not found in response. Response: ${JSON.stringify(data)}`);
+  
+      if (!data.token) {
+        throw new Error(`Token not found in response: ${JSON.stringify(data)}`);
       }
-    } catch (error) {
-      log.error('Token generation failed', error);
-      throw error;
+  
+      Config.token = data.token;
+      log.info('Token generated successfully');
+      return data.token;
+  
+    } catch (err) {
+      log.error('Token generation failed', err instanceof Error ? err.stack || err.message : err);
+      throw err;
     }
   };
 
