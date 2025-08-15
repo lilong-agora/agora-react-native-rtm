@@ -67,13 +67,44 @@ jobs:
         run: |
           touch env_local.ts
           echo "export default {" > env_local.ts
+          # App ID is required
           echo "  appId: '${{ secrets.APP_ID_RTM }}'," >> env_local.ts
-          echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
-          echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
-          echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
-          echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS || '\"{}\"' }}," >> env_local.ts
-          echo "  readChannels: '${{ secrets.READ_CHANNELS || '' }}'," >> env_local.ts
-          echo "  writeChannels: '${{ secrets.WRITE_CHANNELS || '' }}'," >> env_local.ts
+          
+          # Certificate
+          if [ -n "${{ secrets.CERTIFICATE }}" ]; then
+            echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
+          else
+            echo "  certificate: ''," >> env_local.ts
+          fi
+          
+          # User ID
+          if [ -n "${{ secrets.UID }}" ]; then
+            echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
+          else
+            echo "  uid: ''," >> env_local.ts
+          fi
+          
+          # Token Generation URL
+          if [ -n "${{ secrets.TOKEN_GENERATION_URL }}" ]; then
+            echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
+          else
+            echo "  tokenGenerationUrl: ''," >> env_local.ts
+          fi
+          if [ -n "${{ secrets.TOKEN_GENERATION_HEADERS }}" ]; then
+            echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS }}," >> env_local.ts
+          else
+            echo "  tokenGenerationHeaders: '{}'," >> env_local.ts
+          fi
+          if [ -n "${{ secrets.READ_CHANNELS }}" ]; then
+            echo "  readChannels: '${{ secrets.READ_CHANNELS }}'," >> env_local.ts
+          else
+            echo "  readChannels: ''," >> env_local.ts
+          fi
+          if [ -n "${{ secrets.WRITE_CHANNELS }}" ]; then
+            echo "  writeChannels: '${{ secrets.WRITE_CHANNELS }}'," >> env_local.ts
+          else
+            echo "  writeChannels: ''," >> env_local.ts
+          fi
           echo "  token: ''" >> env_local.ts
           echo "};" >> env_local.ts
         working-directory: example/src/config
@@ -137,13 +168,44 @@ jobs:
         run: |
           touch env_local.ts
           echo "export default {" > env_local.ts
+          # App ID is required
           echo "  appId: '${{ secrets.APP_ID_RTM }}'," >> env_local.ts
-          echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
-          echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
-          echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
-          echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS || '\"{}\"' }}," >> env_local.ts
-          echo "  readChannels: '${{ secrets.READ_CHANNELS || '' }}'," >> env_local.ts
-          echo "  writeChannels: '${{ secrets.WRITE_CHANNELS || '' }}'," >> env_local.ts
+          
+          # Certificate
+          if [ -n "${{ secrets.CERTIFICATE }}" ]; then
+            echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
+          else
+            echo "  certificate: ''," >> env_local.ts
+          fi
+          
+          # User ID
+          if [ -n "${{ secrets.UID }}" ]; then
+            echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
+          else
+            echo "  uid: ''," >> env_local.ts
+          fi
+          
+          # Token Generation URL
+          if [ -n "${{ secrets.TOKEN_GENERATION_URL }}" ]; then
+            echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
+          else
+            echo "  tokenGenerationUrl: ''," >> env_local.ts
+          fi
+          if [ -n "${{ secrets.TOKEN_GENERATION_HEADERS }}" ]; then
+            echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS }}," >> env_local.ts
+          else
+            echo "  tokenGenerationHeaders: '{}'," >> env_local.ts
+          fi
+          if [ -n "${{ secrets.READ_CHANNELS }}" ]; then
+            echo "  readChannels: '${{ secrets.READ_CHANNELS }}'," >> env_local.ts
+          else
+            echo "  readChannels: ''," >> env_local.ts
+          fi
+          if [ -n "${{ secrets.WRITE_CHANNELS }}" ]; then
+            echo "  writeChannels: '${{ secrets.WRITE_CHANNELS }}'," >> env_local.ts
+          else
+            echo "  writeChannels: ''," >> env_local.ts
+          fi
           echo "  token: ''" >> env_local.ts
           echo "};" >> env_local.ts
         working-directory: example/src/config
