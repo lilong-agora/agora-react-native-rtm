@@ -104,33 +104,17 @@ export default function Login() {
         ]
       };
 
-      // Parse headers if provided
-      let headers: Record<string, string> = {};
-      try {
-        if (Config.tokenGenerationHeaders && Config.tokenGenerationHeaders !== '{}') {
-          // 尝试解析headers，首先检查它是否已经是一个对象
-          if (typeof Config.tokenGenerationHeaders === 'object') {
-            headers = Config.tokenGenerationHeaders as Record<string, string>;
-          } else {
-            // 移除前后可能的引号，这可能是从环境变量中引入的
-            let headerStr = Config.tokenGenerationHeaders;
-            if (headerStr.startsWith("'") && headerStr.endsWith("'")) {
-              headerStr = headerStr.substring(1, headerStr.length - 1);
-            }
-            if (headerStr.startsWith('"') && headerStr.endsWith('"')) {
-              headerStr = headerStr.substring(1, headerStr.length - 1);
-            }
-            
-            headers = JSON.parse(headerStr) as Record<string, string>;
-          }
-        }
-      } catch (error) {
-        log.error('Failed to parse token generation headers: ' + Config.tokenGenerationHeaders, error);
-      }
-
-      // Add default content-type if not provided
-      if (!headers['Content-Type']) {
-        headers['Content-Type'] = 'application/json';
+      // 创建HTTP请求的headers，只使用Basic Auth
+      let headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      // 如果设置了Basic Auth值，则添加Authorization header
+      if (Config.basicAuthValue) {
+        headers['Authorization'] = `Basic ${Config.basicAuthValue}`;
+        log.info('Using Basic Auth with provided value');
+      } else {
+        log.info('No Basic Auth value provided');
       }
 
       // 记录请求信息以便调试

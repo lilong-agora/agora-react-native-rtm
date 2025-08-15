@@ -50,6 +50,7 @@ const config = {
   // Token generation
   tokenGenerationUrl: getEnvValue('AGORA_TOKEN_GEN_URL', 'tokenGenerationUrl', ''),
   tokenGenerationHeaders: getEnvValue('AGORA_TOKEN_GEN_HEADERS', 'tokenGenerationHeaders', '{}'),
+  basicAuthValue: getEnvValue('AGORA_BASIC_AUTH', 'basicAuthValue', ''),
   readChannels: getEnvValue('AGORA_READ_CHANNELS', 'readChannels', ''),
   writeChannels: getEnvValue('AGORA_WRITE_CHANNELS', 'writeChannels', ''),
 };

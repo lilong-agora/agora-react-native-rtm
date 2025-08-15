@@ -90,11 +90,12 @@ jobs:
           else
             echo "  tokenGenerationUrl: ''," >> env_local.ts
           fi
-          if [ -n "${{ secrets.TOKEN_GENERATION_HEADERS }}" ]; then
-            # 确保JSON字符串被引号包裹
-            echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS }}'," >> env_local.ts
+          
+          # Basic Auth Value
+          if [ -n "${{ secrets.AGORA_BASIC_AUTH }}" ]; then
+            echo "  basicAuthValue: '${{ secrets.AGORA_BASIC_AUTH }}'," >> env_local.ts
           else
-            echo "  tokenGenerationHeaders: '{}'," >> env_local.ts
+            echo "  basicAuthValue: ''," >> env_local.ts
           fi
           if [ -n "${{ secrets.READ_CHANNELS }}" ]; then
             echo "  readChannels: '${{ secrets.READ_CHANNELS }}'," >> env_local.ts
@@ -192,11 +193,12 @@ jobs:
           else
             echo "  tokenGenerationUrl: ''," >> env_local.ts
           fi
-          if [ -n "${{ secrets.TOKEN_GENERATION_HEADERS }}" ]; then
-            # 确保JSON字符串被引号包裹
-            echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS }}'," >> env_local.ts
+          
+          # Basic Auth Value
+          if [ -n "${{ secrets.AGORA_BASIC_AUTH }}" ]; then
+            echo "  basicAuthValue: '${{ secrets.AGORA_BASIC_AUTH }}'," >> env_local.ts
           else
-            echo "  tokenGenerationHeaders: '{}'," >> env_local.ts
+            echo "  basicAuthValue: ''," >> env_local.ts
           fi
           if [ -n "${{ secrets.READ_CHANNELS }}" ]; then
             echo "  readChannels: '${{ secrets.READ_CHANNELS }}'," >> env_local.ts

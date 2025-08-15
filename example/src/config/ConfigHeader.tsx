@@ -44,7 +44,7 @@ export const ConfigHeader = ({
   const [readChannels, setReadChannels] = useState<string>(Config.readChannels);
   const [writeChannels, setWriteChannels] = useState<string>(Config.writeChannels);
   const [tokenGenerationUrl, setTokenGenerationUrl] = useState<string>(Config.tokenGenerationUrl);
-  const [tokenGenerationHeaders, setTokenGenerationHeaders] = useState<string>(Config.tokenGenerationHeaders);
+  const [basicAuthValue, setBasicAuthValue] = useState<string>(Config.basicAuthValue);
   const toggleOverlay = () => {
     onShow();
     setVisible(!visible);
@@ -126,12 +126,12 @@ export const ConfigHeader = ({
               <AgoraDivider />
               <AgoraTextInput
                 onChangeText={(text) => {
-                  setTokenGenerationHeaders(text);
-                  Config.tokenGenerationHeaders = text;
+                  setBasicAuthValue(text);
+                  Config.basicAuthValue = text;
                 }}
-                placeholder="please input token generation headers (JSON)"
-                label="token generation headers"
-                value={tokenGenerationHeaders}
+                placeholder="please input Basic Auth value (without 'Basic ' prefix)"
+                label="basic auth value"
+                value={basicAuthValue}
               />
               <AgoraDivider />
 
