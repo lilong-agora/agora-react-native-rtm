@@ -63,10 +63,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-${{ matrix.newArch }}-
 
-      - name: Modify APP ID
+      - name: Modify Environment Variables
         run: |
           touch env_local.ts
-          echo "export default { appId: '${{ secrets.APP_ID_RTM }}', token: '' };" > env_local.ts
+          echo "export default {" > env_local.ts
+          echo "  appId: '${{ secrets.APP_ID_RTM }}'," >> env_local.ts
+          echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
+          echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
+          echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
+          echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS || '{}' }}'," >> env_local.ts
+          echo "  readChannels: '${{ secrets.READ_CHANNELS || '' }}'," >> env_local.ts
+          echo "  writeChannels: '${{ secrets.WRITE_CHANNELS || '' }}'," >> env_local.ts
+          echo "  token: ''" >> env_local.ts
+          echo "};" >> env_local.ts
         working-directory: example/src/config
 
       - name: Build example for Android
@@ -124,10 +133,19 @@ jobs:
         run: |
           yarn pod-install example/ios
 
-      - name: Modify APP ID
+      - name: Modify Environment Variables
         run: |
           touch env_local.ts
-          echo "export default { appId: '${{ secrets.APP_ID_RTM }}', token: '' };" > env_local.ts
+          echo "export default {" > env_local.ts
+          echo "  appId: '${{ secrets.APP_ID_RTM }}'," >> env_local.ts
+          echo "  certificate: '${{ secrets.CERTIFICATE }}'," >> env_local.ts
+          echo "  uid: '${{ secrets.UID }}'," >> env_local.ts
+          echo "  tokenGenerationUrl: '${{ secrets.TOKEN_GENERATION_URL }}'," >> env_local.ts
+          echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS || '{}' }}'," >> env_local.ts
+          echo "  readChannels: '${{ secrets.READ_CHANNELS || '' }}'," >> env_local.ts
+          echo "  writeChannels: '${{ secrets.WRITE_CHANNELS || '' }}'," >> env_local.ts
+          echo "  token: ''" >> env_local.ts
+          echo "};" >> env_local.ts
         working-directory: example/src/config
 
       - name: Install the Apple certificate and provisioning profile
