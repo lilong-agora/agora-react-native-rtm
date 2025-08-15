@@ -91,7 +91,8 @@ jobs:
             echo "  tokenGenerationUrl: ''," >> env_local.ts
           fi
           if [ -n "${{ secrets.TOKEN_GENERATION_HEADERS }}" ]; then
-            echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS }}," >> env_local.ts
+            # 确保JSON字符串被引号包裹
+            echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS }}'," >> env_local.ts
           else
             echo "  tokenGenerationHeaders: '{}'," >> env_local.ts
           fi
@@ -192,7 +193,8 @@ jobs:
             echo "  tokenGenerationUrl: ''," >> env_local.ts
           fi
           if [ -n "${{ secrets.TOKEN_GENERATION_HEADERS }}" ]; then
-            echo "  tokenGenerationHeaders: ${{ secrets.TOKEN_GENERATION_HEADERS }}," >> env_local.ts
+            # 确保JSON字符串被引号包裹
+            echo "  tokenGenerationHeaders: '${{ secrets.TOKEN_GENERATION_HEADERS }}'," >> env_local.ts
           else
             echo "  tokenGenerationHeaders: '{}'," >> env_local.ts
           fi
