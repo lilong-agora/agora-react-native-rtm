@@ -37,7 +37,7 @@ const config = {
   token: getEnvValue('AGORA_TOKEN', 'token', ''),
   channelName: getEnvValue('AGORA_CHANNEL_NAME', 'channelName', 'rtmtestrn'),
   uid: getEnvValue('AGORA_UID', 'uid', ''),
-  loginExpireTime: parseInt(getEnvValue('AGORA_LOGIN_EXPIRE_TIME', 'loginExpireTime', '1800'), 10),
+  loginExpireTime: parseInt(getEnvValue('AGORA_LOGIN_EXPIRE_TIME', 'loginExpireTime', '1800'), 10) || 1800,
   logFilePath: getEnvValue('AGORA_LOG_FILE_PATH', 'logFilePath', ''),
   server: getEnvValue('AGORA_SERVER', 'server', ''),
   port: parseInt(getEnvValue('AGORA_PORT', 'port', '0'), 10) || 0,
