@@ -146,6 +146,79 @@ export const ConfigHeader = ({
                 value={basicAuthValue}
               />
               <AgoraDivider />
+              <AgoraButton 
+                title="Generate & Set Token" 
+                onPress={async () => {
+                  try {
+                    // Check if token generation is configured
+                    if (!Config.tokenGenerationUrl) {
+                      return;
+                    }
+
+                    if (!Config.appId || !Config.certificate || !Config.uid) {
+                      return;
+                    }
+
+                    // Parse read/write channels 
+                    const readChannels = Config.readChannels ? Config.readChannels.split(',').map((c: string) => c.trim()) : [];
+                    const writeChannels = Config.writeChannels ? Config.writeChannels.split(',').map((c: string) => c.trim()) : [];
+
+                    // Prepare request payload
+                    const payload = {
+                      appId: Config.appId,
+                      appCertificate: Config.certificate,
+                      expireTimestamp: 3600,
+                      services: [
+                        {
+                          type: "RTM2",
+                          userId: Config.uid,
+                          privileges: {
+                            Login: Config.loginExpireTime
+                          },
+                          permissions: {
+                            "message-channels": {
+                              read: readChannels,
+                              write: writeChannels
+                            }
+                          }
+                        }
+                      ]
+                    };
+
+                    // Create HTTP request headers
+                    let headers: Record<string, string> = {
+                      'Content-Type': 'application/json'
+                    };
+                    
+                    if (Config.basicAuthValue) {
+                      headers['Authorization'] = `Basic ${Config.basicAuthValue}`;
+                    }
+
+                    // Make HTTP request
+                    const response = await fetch(Config.tokenGenerationUrl, {
+                      method: 'POST',
+                      headers: headers,
+                      body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data && data.rtmToken) {
+                      Config.token = data.rtmToken;
+                      console.log('Token generated and set successfully');
+                    } else {
+                      throw new Error('Invalid token response format');
+                    }
+                  } catch (error: any) {
+                    console.error(`Failed to generate token: ${error.message}`);
+                  }
+                }}
+              />
+              <AgoraDivider />
 
               <AgoraDropdown
                 items={enumToItems(RtmProxyType)}

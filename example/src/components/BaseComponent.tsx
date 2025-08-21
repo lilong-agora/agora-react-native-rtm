@@ -71,7 +71,14 @@ export default function BaseComponent({
   const [cName, setCName] = useState<string>(Config.channelName);
   const navigation = useNavigation();
   const [param, setParam] = useState<string>('');
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>(Config.token || '');
+
+  // Update token state when Config.token changes
+  useEffect(() => {
+    if (Config.token) {
+      setToken(Config.token);
+    }
+  }, [Config.token]);
 
   useEffect(() => {
     const headerRight = () => <Header />;
@@ -231,23 +238,101 @@ export default function BaseComponent({
           log.info('setParameters', result);
         }}
       />
-      {streamChannel && (
-        <>
-          <AgoraTextInput
-            onChangeText={(text) => {
-              setToken(text);
-            }}
-            label="token"
-            placeholder="please input token"
-            value={token}
-          />
-          <AgoraButton
-            title="renewToken"
-            onPress={renewToken}
-            disabled={!loginSuccess}
-          />
-        </>
-      )}
+      <AgoraTextInput
+        onChangeText={(text) => {
+          setToken(text);
+          // Also update Config.token to ensure it's synchronized
+          Config.token = text;
+        }}
+        label="token"
+        placeholder="please input token"
+        value={token}
+      />
+      
+      <AgoraButton
+        title="Renew Token"
+        onPress={renewToken}
+        disabled={!loginSuccess || !token}
+      />
+      
+      {/* Generate token button that uses the configuration parameters */}
+      <AgoraButton 
+        title="Generate Token"
+        onPress={async () => {
+          try {
+            // Check if token generation is configured
+            if (!Config.tokenGenerationUrl) {
+              log.error('Token generation URL is not set');
+              return;
+            }
+
+            if (!Config.appId || !Config.certificate || !Config.uid) {
+              log.error('AppId, certificate or userId is missing');
+              return;
+            }
+
+            // Parse read/write channels 
+            const readChannels = Config.readChannels ? Config.readChannels.split(',').map((c: string) => c.trim()) : [];
+            const writeChannels = Config.writeChannels ? Config.writeChannels.split(',').map((c: string) => c.trim()) : [];
+
+            // Prepare request payload
+            const payload = {
+              appId: Config.appId,
+              appCertificate: Config.certificate,
+              expireTimestamp: 3600,
+              services: [
+                {
+                  type: "RTM2",
+                  userId: Config.uid,
+                  privileges: {
+                    Login: Config.loginExpireTime
+                  },
+                  permissions: {
+                    "message-channels": {
+                      read: readChannels,
+                      write: writeChannels
+                    }
+                  }
+                }
+              ]
+            };
+
+            // Create HTTP request headers
+            let headers: Record<string, string> = {
+              'Content-Type': 'application/json'
+            };
+            
+            if (Config.basicAuthValue) {
+              headers['Authorization'] = `Basic ${Config.basicAuthValue}`;
+            }
+
+            log.info('Generating token with payload', payload);
+            
+            // Make HTTP request
+            const response = await fetch(Config.tokenGenerationUrl, {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data && data.rtmToken) {
+              setToken(data.rtmToken);
+              Config.token = data.rtmToken;
+              log.info('Token generated successfully');
+            } else {
+              throw new Error('Invalid token response format');
+            }
+          } catch (error: any) {
+            log.error('Failed to generate token', error.message);
+          }
+        }}
+      />
     </AgoraView>
   );
 }
