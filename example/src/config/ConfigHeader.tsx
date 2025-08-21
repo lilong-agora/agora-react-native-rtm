@@ -41,6 +41,7 @@ export const ConfigHeader = ({
   );
   const [appId, setAppId] = useState<string>(Config.appId);
   const [certificate, setCertificate] = useState<string>(Config.certificate);
+  const [loginExpireTime, setLoginExpireTime] = useState<string>(Config.loginExpireTime);
   const [readChannels, setReadChannels] = useState<string>(Config.readChannels);
   const [writeChannels, setWriteChannels] = useState<string>(Config.writeChannels);
   const [tokenGenerationUrl, setTokenGenerationUrl] = useState<string>(Config.tokenGenerationUrl);
@@ -92,6 +93,16 @@ export const ConfigHeader = ({
                 placeholder="please input certificate"
                 label="certificate"
                 value={certificate}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  setLoginExpireTime(text);
+                  Config.loginExpireTime = text;
+                }}
+                placeholder="please input login expire time"
+                label="login expire time"
+                value={loginExpireTime}
               />
               <AgoraDivider />
               <AgoraTextInput

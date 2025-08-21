@@ -73,7 +73,7 @@ export default function Login() {
         return;
       }
 
-      if (!Config.appId || !Config.certificate || !Config.uid) {
+      if (!Config.appId || !Config.certificate || !Config.uid || !Config.loginExpireTime) {
         log.error('AppId, certificate or userId is missing');
         return;
       }
@@ -92,7 +92,7 @@ export default function Login() {
             type: "RTM2",
             userId: Config.uid,
             privileges: {
-              Login: 3600
+              Login: Config.loginExpireTime
             },
             permissions: {
               "message-channels": {
