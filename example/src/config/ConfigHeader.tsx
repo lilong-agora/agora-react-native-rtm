@@ -40,12 +40,10 @@ export const ConfigHeader = ({
     Config.encryptionKey
   );
   const [appId, setAppId] = useState<string>(Config.appId);
-  const [certificate, setCertificate] = useState<string>(Config.certificate);
-  const [loginExpireTime, setLoginExpireTime] = useState<number>(Config.loginExpireTime);
-  const [readChannels, setReadChannels] = useState<string>(Config.readChannels);
-  const [writeChannels, setWriteChannels] = useState<string>(Config.writeChannels);
-  const [tokenGenerationUrl, setTokenGenerationUrl] = useState<string>(Config.tokenGenerationUrl);
-  const [basicAuthValue, setBasicAuthValue] = useState<string>(Config.basicAuthValue);
+  const [reconnectTimeout, setReconnectTimeout] = useState<number>(
+    Config.reconnectTimeout
+  );
+
   const toggleOverlay = () => {
     onShow();
     setVisible(!visible);
@@ -279,6 +277,17 @@ export const ConfigHeader = ({
                 placeholder="please input encryptionKey"
                 label="encryptionKey"
                 value={encryptionKey}
+              />
+              <AgoraDivider />
+              <AgoraTextInput
+                onChangeText={(text) => {
+                  if (!text) return;
+                  setReconnectTimeout(parseInt(text, 10));
+                  Config.reconnectTimeout = parseInt(text, 10);
+                }}
+                placeholder="please input reconnectTimeout"
+                label="reconnectTimeout"
+                value={reconnectTimeout?.toString()}
               />
               <AgoraDivider />
             </ScrollView>

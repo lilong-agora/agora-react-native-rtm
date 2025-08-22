@@ -36,7 +36,6 @@ interface Props {
   onStorage?: (storage: StorageEvent) => void;
   onTopic?: (topic: TopicEvent) => void;
   onToken?: (e: TokenEvent) => void;
-  streamChannel?: RTMStreamChannel;
 }
 
 export const Header = () => {
@@ -65,7 +64,6 @@ export default function BaseComponent({
   onStorage,
   onTopic,
   onToken,
-  streamChannel,
 }: Props) {
   // 使用可折叠状态来控制设置部分的显示
   const [showConnectionSettings, setShowConnectionSettings] = useState<boolean>(true);

@@ -48,12 +48,8 @@ const config = {
   encryptionMode: parseInt(getEnvValue('AGORA_ENCRYPTION_MODE', 'encryptionMode', RtmEncryptionMode.none.toString()), 10) || RtmEncryptionMode.none,
   encryptionKey: getEnvValue('AGORA_ENCRYPTION_KEY', 'encryptionKey', ''),
   encryptionSalt: new Array(32).fill(1, 0, 32),
-  // Token generation
-  tokenGenerationUrl: getEnvValue('AGORA_TOKEN_GEN_URL', 'tokenGenerationUrl', ''),
-  tokenGenerationHeaders: getEnvValue('AGORA_TOKEN_GEN_HEADERS', 'tokenGenerationHeaders', '{}'),
-  basicAuthValue: getEnvValue('AGORA_BASIC_AUTH', 'basicAuthValue', ''),
-  readChannels: getEnvValue('AGORA_READ_CHANNELS', 'readChannels', ''),
-  writeChannels: getEnvValue('AGORA_WRITE_CHANNELS', 'writeChannels', ''),
+  reconnectTimeout: 0,
+
 };
 
 export default config;
