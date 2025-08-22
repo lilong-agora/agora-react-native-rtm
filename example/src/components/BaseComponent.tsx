@@ -67,6 +67,8 @@ export default function BaseComponent({
   onToken,
   streamChannel,
 }: Props) {
+  // 使用可折叠状态来控制设置部分的显示
+  const [showConnectionSettings, setShowConnectionSettings] = useState<boolean>(true);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [cName, setCName] = useState<string>(Config.channelName);
   const [userId, setUserId] = useState<string>(Config.uid);
@@ -75,7 +77,7 @@ export default function BaseComponent({
   const navigation = useNavigation();
   const [param, setParam] = useState<string>('');
   const [token, setToken] = useState<string>(Config.token || '');
-  const [responseFormat, setResponseFormat] = useState<string>('{\"rtmToken\":\"token_value\"}');
+  const [responseFormat, setResponseFormat] = useState<string>('{\"token\":\"token_value\"}');
 
   // Update states when Config changes
   useEffect(() => {
@@ -336,14 +338,31 @@ export default function BaseComponent({
 
   return (
     <AgoraView style={AgoraStyle.fullWidth}>
-      <AgoraButton
-        title={`${loginSuccess ? 'Logout' : 'Login'}`}
-        onPress={() => {
-          loginSuccess ? logout() : login();
-        }}
-      />
+      {/* 基本控制按钮 */}
+      <AgoraView style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+        <AgoraButton
+          title={`${loginSuccess ? 'Logout' : 'Login'}`}
+          onPress={() => {
+            loginSuccess ? logout() : login();
+          }}
+        />
+        
+        <AgoraButton
+          title={`${showConnectionSettings ? 'Hide' : 'Show'} Token Settings`}
+          onPress={() => setShowConnectionSettings(!showConnectionSettings)}
+        />
+      </AgoraView>
       
-      {/* 身份验证和连接部分 */}
+      {/* 基本信息显示 - 简洁模式 */}
+      {!showConnectionSettings && (
+        <AgoraView style={{ padding: 5, marginBottom: 5, borderWidth: 1, borderColor: '#ddd', borderRadius: 5 }}>
+          <AgoraText>Channel: {cName} | User: {userId}</AgoraText>
+          {streamChannel && <AgoraText style={{ color: 'blue' }}>Stream Channel Mode</AgoraText>}
+        </AgoraView>
+      )}
+      
+      {/* 身份验证和连接部分 - 可折叠 */}
+      {showConnectionSettings && (
       <AgoraView style={{ marginTop: 10, marginBottom: 10, padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 5 }}>
         <AgoraText style={{ fontWeight: 'bold', marginBottom: 5 }}>Connection Settings:</AgoraText>
         
@@ -431,32 +450,35 @@ export default function BaseComponent({
           </AgoraText>
         )}
       </AgoraView>
+      )}
       
-      {/* 高级设置部分 */}
-      <AgoraView style={{ marginTop: 10, padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 5 }}>
-        <AgoraText style={{ fontWeight: 'bold', marginBottom: 5 }}>Advanced Settings:</AgoraText>
-        
-        <AgoraTextInput
-          onChangeText={(text) => {
-            setParam(text);
-          }}
-          label="Parameters"
-          placeholder="Please input JSON parameters"
-          value={param}
-        />
-        
-        <AgoraButton
-          title="Set Parameters"
-          onPress={() => {
-            try {
-              let result = client.setParameters(param);
-              log.info('setParameters success', result);
-            } catch (error: any) {
-              log.error('setParameters error', error);
-            }
-          }}
-        />
-      </AgoraView>
+      {/* 高级设置部分 - 可折叠 */}
+      {showConnectionSettings && (
+        <AgoraView style={{ marginTop: 10, padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 5 }}>
+          <AgoraText style={{ fontWeight: 'bold', marginBottom: 5 }}>Advanced Settings:</AgoraText>
+          
+          <AgoraTextInput
+            onChangeText={(text) => {
+              setParam(text);
+            }}
+            label="Parameters"
+            placeholder="Please input JSON parameters"
+            value={param}
+          />
+          
+          <AgoraButton
+            title="Set Parameters"
+            onPress={() => {
+              try {
+                let result = client.setParameters(param);
+                log.info('setParameters success', result);
+              } catch (error: any) {
+                log.error('setParameters error', error);
+              }
+            }}
+          />
+        </AgoraView>
+      )}
     </AgoraView>
   );
 }
