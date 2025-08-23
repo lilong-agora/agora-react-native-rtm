@@ -72,6 +72,7 @@ export default function BaseComponent({
   const [userId, setUserId] = useState<string>(Config.uid);
   const [readChannels, setReadChannels] = useState<string>(Config.readChannels || '');
   const [writeChannels, setWriteChannels] = useState<string>(Config.writeChannels || '');
+  const [streamChannel, setStreamChannel] = useState<RTMStreamChannel | undefined>(undefined);
   const navigation = useNavigation();
   const [param, setParam] = useState<string>('');
   const [token, setToken] = useState<string>(Config.token || '');
@@ -100,6 +101,17 @@ export default function BaseComponent({
     const headerRight = () => <Header />;
     navigation.setOptions({ headerRight });
   }, [navigation]);
+  
+  // Handle streamChannel when needed
+  const createStreamChannel = async () => {
+    try {
+      let result = await client.createStreamChannel(cName);
+      setStreamChannel(result);
+      log.info('createStreamChannel success', result);
+    } catch (status: any) {
+      log.error('createStreamChannel error', status);
+    }
+  };
 
   useEffect(() => {
     return () => {
