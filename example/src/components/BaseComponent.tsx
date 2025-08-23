@@ -151,29 +151,12 @@ export default function BaseComponent({
   };
 
   /**
-   * 一键生成并更新Token
+   * 一键生成并更新Token (废弃) - 已拆分为两个单独的功能
+   * @deprecated 使用独立的生成和更新功能代替
    */
-  const generateAndRenewToken = async () => {
-    try {
-      // 先生成新token
-      const newToken = await generateToken();
-      
-      if (newToken) {
-        // 如果token生成成功，立即更新token
-        try {
-          // 根据是否有streamChannel决定如何renewToken
-          let result = await client.renewToken(newToken, 
-            streamChannel ? { channelName: cName } : undefined
-          );
-          log.info('Token renewed successfully', result);
-        } catch (status: any) {
-          log.error('Token renewal failed', status);
-          log.error('Error details:', JSON.stringify(status));
-        }
-      }
-    } catch (error: any) {
-      log.error('Generate and renew token failed:', error.message);
-    }
+  const _generateAndRenewToken = async () => {
+    // 此函数已废弃，不再使用
+    log.error('此函数已废弃，请使用独立的生成和更新功能');
   };
 
   /**
@@ -445,11 +428,39 @@ export default function BaseComponent({
         />
         
         {/* Token操作按钮 */}
-        <AgoraView style={{ marginTop: 10 }}>
+        <AgoraView style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
           <AgoraButton
-            title="Generate & Renew Token"
-            onPress={generateAndRenewToken}
+            title="Generate Token"
+            onPress={async () => {
+              try {
+                // 生成新token
+                const newToken = await generateToken();
+                if (newToken) {
+                  log.info('Token generated successfully');
+                }
+              } catch (error) {
+                // 错误已在函数中记录
+              }
+            }}
             disabled={!Config.tokenGenerationUrl || !Config.appId || !Config.certificate || !userId}
+          />
+          <AgoraButton
+            title="Renew Token"
+            onPress={async () => {
+              try {
+                if (!Config.token) {
+                  log.error('No token to renew');
+                  return;
+                }
+                let result = await client.renewToken(Config.token, 
+                  streamChannel ? { channelName: cName } : undefined
+                );
+                log.info('Token renewed successfully', result);
+              } catch (error: any) {
+                log.error('Token renewal failed', error);
+              }
+            }}
+            disabled={!Config.token || !loginSuccess}
           />
         </AgoraView>
 

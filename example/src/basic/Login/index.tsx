@@ -5,12 +5,13 @@ import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 import { Header } from '../../components/BaseComponent';
-import { AgoraButton, AgoraStyle } from '../../components/ui';
+import { AgoraButton, AgoraStyle, AgoraTextInput } from '../../components/ui';
 import Config from '../../config/agora.config';
 import * as log from '../../utils/log';
 
 export default function Login() {
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loginExpireTime, setLoginExpireTime] = useState<number>(Config.loginExpireTime || 1800);
 
   /**
    * Step 1: getRtmClient
@@ -92,7 +93,7 @@ export default function Login() {
             type: "RTM2",
             userId: Config.uid,
             privileges: {
-              Login: Config.loginExpireTime
+              Login: loginExpireTime
             },
             permissions: {
               "message-channels": {
@@ -182,6 +183,18 @@ export default function Login() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView style={AgoraStyle.fullSize}>
+        <AgoraTextInput
+          onChangeText={(text) => {
+            const value = parseInt(text, 10);
+            if (!isNaN(value)) {
+              setLoginExpireTime(value);
+              Config.loginExpireTime = value;
+            }
+          }}
+          label="Login Expire Time (seconds)"
+          placeholder="Enter login expire time in seconds"
+          value={loginExpireTime.toString()}
+        />
         <AgoraButton
           disabled={!Config.uid}
           title={`${loginSuccess ? 'logout' : 'login'}`}
@@ -200,7 +213,11 @@ export default function Login() {
             }
           }} 
         />
-        <AgoraButton title="renewToken" onPress={renewToken} />
+        <AgoraButton
+          title="Renew Token"
+          onPress={renewToken}
+          disabled={!Config.token}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

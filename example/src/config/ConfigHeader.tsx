@@ -151,7 +151,7 @@ export const ConfigHeader = ({
               />
               <AgoraDivider />
               <AgoraButton 
-                title="Generate & Set Token" 
+                title="Generate Token" 
                 onPress={async () => {
                   try {
                     // Check if token generation is configured
