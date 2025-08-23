@@ -168,20 +168,6 @@ export default function PublishMessage() {
 
   return (
     <>
-      <AgoraTextInput
-        onChangeText={(text) => {
-          setToken(text);
-          Config.token = text;
-        }}
-        label="token"
-        placeholder="please input token"
-        value={token}
-      />
-      <AgoraButton
-        title="renewToken"
-        onPress={renewToken}
-        disabled={!loginSuccess}
-      />
       <AgoraView style={AgoraStyle.fullWidth}>
         <BaseComponent
           onChannelNameChanged={(v) => setCName(v)}

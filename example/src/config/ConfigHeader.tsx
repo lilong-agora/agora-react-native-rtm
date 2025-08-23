@@ -40,6 +40,12 @@ export const ConfigHeader = ({
     Config.encryptionKey
   );
   const [appId, setAppId] = useState<string>(Config.appId);
+  const [certificate, setCertificate] = useState<string>(Config.certificate);
+  const [loginExpireTime, setLoginExpireTime] = useState<number>(Config.loginExpireTime);
+  const [readChannels, setReadChannels] = useState<string>(Config.readChannels);
+  const [writeChannels, setWriteChannels] = useState<string>(Config.writeChannels);
+  const [tokenGenerationUrl, setTokenGenerationUrl] = useState<string>(Config.tokenGenerationUrl);
+  const [basicAuthValue, setBasicAuthValue] = useState<string>(Config.basicAuthValue);
   const [reconnectTimeout, setReconnectTimeout] = useState<number>(
     Config.reconnectTimeout
   );
